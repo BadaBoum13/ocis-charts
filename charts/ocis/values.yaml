@@ -932,7 +932,9 @@ features:
       # @schema
       # -- Issuer URI of the OpenID Connect Identity Provider.
       # If the IDP doesn't have valid / trusted SSL certificates, certificate validation can be disabled with the `insecure.oidcIdpInsecure` option.
-      # The issuerURI will be automatically be added to http.csp.directives.connectSrc
+      # The issuerURI will be automatically be added to http.csp.directives.connectSrc.
+      # If `secretRefs.oidcSecretRef` is set, its `issuer-uri` key is used instead for all other purposes,
+      # but this value is still needed to populate `http.csp.directives.connectSrc` (see ref:Secrets#secrets).
       issuerURI:
       # @schema
       # type: [string, null]
@@ -1686,6 +1688,20 @@ secretRefs:
   # @schema
   # -- Reference to an existing JWT secret (see ref:Secrets#secrets).
   jwtSecretRef:
+  # @schema
+  # type: [string, null]
+  # required: false
+  # @schema
+  # -- Reference to an existing secret holding the external OpenID Connect provider's configuration
+  # (e.g. Auth0, synced from a secret store such as OpenBao/Vault via External Secrets Operator).
+  # Only used if `features.externalUserManagement.enabled` equals `true`.
+  # The secret must contain the keys `issuer-uri` and `client-id`, which then take precedence over
+  # `features.externalUserManagement.oidc.issuerURI` and `services.web.config.oidc.webClientID`.
+  # Note that `features.externalUserManagement.oidc.issuerURI` is still used to populate
+  # `http.csp.directives.connectSrc` (a ConfigMap value, which cannot read from a Secret) — either
+  # keep it set to the same issuer URI, or add the issuer origin to `http.csp.directives.connectSrc`
+  # yourself.
+  oidcSecretRef:
   # @schema
   # type: [string, null]
   # required: false
@@ -5481,7 +5497,9 @@ services:
         # type: string
         # required: true
         # @schema
-        # -- Specify the client ID which the web frontend will use
+        # -- Specify the client ID which the web frontend will use.
+        # Ignored if `secretRefs.oidcSecretRef` is set and `features.externalUserManagement.enabled` equals `true`
+        # (see ref:Secrets#secrets) — the secret's `client-id` key is used instead.
         webClientID: web
         # @schema
         # type: [string, null]

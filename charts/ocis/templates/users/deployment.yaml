@@ -139,11 +139,7 @@ spec:
                   name: {{ include "secrets.ldapBindSecret" . }}
                   key: reva-ldap-bind-password
             - name: USERS_IDP_URL
-            {{ if not .Values.features.externalUserManagement.enabled }}
-              value: "https://{{ .Values.externalDomain }}"
-            {{ else }}
-              value: {{ .Values.features.externalUserManagement.oidc.issuerURI | quote }}
-            {{ end }}
+              {{- include "ocis.oidcIssuerEnvValue" . | nindent 14 }}
 
             - name: USERS_JWT_SECRET
               valueFrom:

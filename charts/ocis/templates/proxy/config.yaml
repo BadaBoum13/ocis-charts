@@ -46,7 +46,7 @@ data:
         {{- with .Values.http.csp.directives.connectSrc -}}
         {{ toYaml . | nindent 8 }}
         {{- end }}
-        {{- if .Values.features.externalUserManagement.enabled }}
+        {{- if and .Values.features.externalUserManagement.enabled .Values.features.externalUserManagement.oidc.issuerURI }}
         - "{{ trimSuffix "/" .Values.features.externalUserManagement.oidc.issuerURI }}/"
         {{- end }}
       default-src:

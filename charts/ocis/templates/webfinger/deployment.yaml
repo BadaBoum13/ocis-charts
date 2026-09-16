@@ -52,11 +52,7 @@ spec:
               value: 0.0.0.0:8081
 
             - name: WEBFINGER_OIDC_ISSUER
-            {{- if not .Values.features.externalUserManagement.enabled }}
-              value: "https://{{ .Values.externalDomain }}"
-            {{- else }}
-              value: {{ .Values.features.externalUserManagement.oidc.issuerURI | quote }}
-            {{- end }}
+              {{- include "ocis.oidcIssuerEnvValue" . | nindent 14 }}
             - name: WEBFINGER_OWNCLOUD_SERVER_INSTANCE_URL
               value: "https://{{ required "externalDomain needs to be set" .Values.externalDomain }}"
             - name: WEBFINGER_INSECURE

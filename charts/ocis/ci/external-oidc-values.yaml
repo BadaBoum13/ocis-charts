@@ -1,0 +1,18 @@
+---
+# Minimal values exercising OIDC configuration sourced from an existing Secret
+# (see secretRefs.oidcSecretRef), e.g. synced from OpenBao/Vault via External
+# Secrets Operator.
+externalDomain: ocis.owncloud.test
+
+secretRefs:
+  oidcSecretRef: ocis-oidc
+
+features:
+  externalUserManagement:
+    enabled: true
+    oidc:
+      # Kept in sync with the oidcSecretRef's issuer-uri key; only used here to
+      # populate http.csp.directives.connectSrc.
+      issuerURI: https://tenant.eu.auth0.com/
+      userIDClaim: sub
+      userIDClaimAttributeMapping: userid

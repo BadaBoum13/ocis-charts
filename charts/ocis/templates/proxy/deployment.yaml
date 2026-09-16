@@ -53,11 +53,7 @@ spec:
               value: 0.0.0.0:9205
 
             - name: PROXY_OIDC_ISSUER
-            {{- if not .Values.features.externalUserManagement.enabled }}
-              value: "https://{{ .Values.externalDomain }}"
-            {{- else }}
-              value: {{ required "features.externalUserManagement.oidc.issuerURI must be set when features.externalUserManagement.enabled is set to true" .Values.features.externalUserManagement.oidc.issuerURI | quote }}
-            {{- end }}
+              {{- include "ocis.oidcIssuerEnvValue" . | nindent 14 }}
 
             {{- if .Values.features.externalUserManagement.enabled }}
             - name: PROXY_OIDC_REWRITE_WELLKNOWN

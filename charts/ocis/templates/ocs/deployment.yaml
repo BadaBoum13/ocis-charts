@@ -52,11 +52,7 @@ spec:
               value: 0.0.0.0:9114
 
             - name: OCS_IDM_ADDRESS
-            {{ if not .Values.features.externalUserManagement.enabled }}
-              value: "https://{{ .Values.externalDomain }}"
-            {{ else }}
-              value: {{ .Values.features.externalUserManagement.oidc.issuerURI | quote }}
-            {{ end }}
+              {{- include "ocis.oidcIssuerEnvValue" . | nindent 14 }}
 
             - name: OCS_JWT_SECRET
               valueFrom:

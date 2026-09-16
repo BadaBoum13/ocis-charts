@@ -68,13 +68,9 @@ spec:
               value: 0.0.0.0:9104
 
             - name: WEB_OIDC_AUTHORITY
-            {{- if not .Values.features.externalUserManagement.enabled }}
-              value: "https://{{ .Values.externalDomain }}"
-            {{- else }}
-              value: {{ .Values.features.externalUserManagement.oidc.issuerURI | quote }}
-            {{- end }}
+              {{- include "ocis.oidcIssuerEnvValue" . | nindent 14 }}
             - name: WEB_OIDC_CLIENT_ID
-              value: {{ .Values.services.web.config.oidc.webClientID | quote }}
+              {{- include "ocis.oidcWebClientIDEnvValue" . | nindent 14 }}
             - name: WEB_OIDC_SCOPE
               value: {{ .Values.services.web.config.oidc.webClientScope | quote }}
 
